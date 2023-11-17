@@ -35,7 +35,6 @@ app.get('/get', (req, res) => {
 })
 
 app.put('/update/:id', (req, res) => {
-    console.log(req.params)
     const {id} = req.params;
     const {task} = req.body;
 
@@ -55,6 +54,20 @@ app.delete('/delete/:id', (req, res) => {
     Task.destroy({where: {id: id} })
         .then(result => res.json(result))
         .catch(err => res.json(err))
+})
+
+app.put('/done/:id', (req, res) => {
+    const {id} = req.params;
+    const {task} = req.params;
+    Task.update({task: task}, {where: {id: id}})
+        .then((result) => {
+            if(result[0] === 1){
+                res.json({message: 'La tâche a bien été mise à jour.'})
+            }else{
+                res.status(404).json({message: 'La tâche n\'a pas pu être mis à jour.'})
+            } 
+        })
+        .catch((err) => res.status(500).json({error: err.message}))
 })
 
 app.post('/add', (req, res) => {

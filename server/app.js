@@ -70,18 +70,24 @@ app.put('/done/:id', (req, res) => {
         .catch((err) => res.status(500).json({error: err.message}))
 })
 
-app.post('/add', (req, res) => {
-    const task = req.body.task;
-    Task.create({
-        task: task
-    })
-        .then((createdTask) => {
-            // createdTask contient la tâche créée
-            res.json(createdTask);
+app.post('/add', async (req, res) => {
+    try{
+        const task = req.body.task;
+
+        // Vérifiez que la propriété task est définie et non nulle
+        if (!task || task === null || task.task.trim() === '') {
+            return res.status(400).json({ error: 'La propriété task est requise et ne peut pas être nulle.' });
+        }
+        console.log(task.task)
+        const createdTask = await Task.create({
+            ...task
         })
-        .catch((err) => {
-            res.status(500).json({ error: err.message });
-        })
+        await Task.update({task: createdTask.task},{where: {id: createdTask.id}})
+        res.json({task: createdTask})
+    }catch (error){
+        console.error('Erreur lors de l\'ajout de la tâche :', error);
+        res.status(500).json({ error: 'Erreur serveur lors de l\'ajout de la tâche' });
+    }
 });
 
 app.get('/user/:id', (req, res) => {

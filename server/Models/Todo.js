@@ -7,6 +7,10 @@ module.exports = (Sequelize, DataTypes) => {
         done: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        order: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     })
 }

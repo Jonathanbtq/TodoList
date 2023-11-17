@@ -78,11 +78,12 @@ app.post('/add', async (req, res) => {
         if (!task || task === null || task.task.trim() === '') {
             return res.status(400).json({ error: 'La propriété task est requise et ne peut pas être nulle.' });
         }
-        console.log(task.task)
+        let tasks = await Task.findAll()
+        let nbTask = tasks.length + 1
         const createdTask = await Task.create({
-            ...task
+            ...task,
+            order: nbTask
         })
-        await Task.update({task: createdTask.task},{where: {id: createdTask.id}})
         res.json({task: createdTask})
     }catch (error){
         console.error('Erreur lors de l\'ajout de la tâche :', error);

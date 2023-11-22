@@ -58,11 +58,12 @@ app.delete('/delete/:id', (req, res) => {
 
 app.put('/done/:id', (req, res) => {
     const {id} = req.params;
-    const {task} = req.params;
+    const {task} = req.body;
+    console.log(task)
     Task.update({task: task}, {where: {id: id}})
         .then((result) => {
             if(result[0] === 1){
-                res.json({message: 'La tâche a bien été mise à jour.'})
+                res.json({message: 'La tâche a bien été mise à jour.', task})
             }else{
                 res.status(404).json({message: 'La tâche n\'a pas pu être mis à jour.'})
             } 
